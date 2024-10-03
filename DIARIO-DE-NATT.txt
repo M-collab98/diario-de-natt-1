@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sigue contando tu día aquí con fotos y recuerdos especiales.">
+    <meta name="theme-color" content="#ff4081">
+    <title> &#129505 Diario de Natt &#129505</title>
+    <style>
+        body {
+            font-family: Arial, Arial, sans-serif;
+            line-height: 1.8;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #666;
+        }
+        header {
+            background: #ff4081;
+            color: #fbf;
+            padding: 20px 0;
+            text-align: center;
+            position: relative;
+        }
+        .cover-photo-container {
+            position: relative;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .cover-photo-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .cover-photo-container .delete-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 64, 129, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .cover-photo-btn {
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            overflow: hidden;
+        }
+        article {
+            background: #fff;
+            padding: 30px;
+            margin-top: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            margin: 0;
+            color: #333;
+        }
+        .calendar {
+            margin-top: 30px;
+        }
+        .day-row {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .day-column {
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .day-header {
+            background-color: #ff4081;
+            color: #fff;
+            padding: 5px;
+            font-weight: bold;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .day-column textarea {
+            width: 100%;
+            height: 450px;
+            border: none;
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+            resize: vertical;
+            overflow-y: auto;
+        }
+        .photo-input {
+            display: block;
+            margin-top: 10px;
+            padding: 2px 5px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            width: 100%;
+            color: white;
+            background-color: #ff4081;
+        }
+        .photo-input input[type="file"] {
+            display: none;
+        }
+        .photos {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .photos .img-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .photos img {
+            max-width: 100px;
+            height: auto;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .photos .delete-icon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(255, 64, 129, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 1;
+            transform: translate(50%, -50%);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .save-week-btn {
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        #saved-weeks {
+            margin-top: 30px;
+        }
+        .saved-week {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+            background: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+        }
+        .saved-week .week-content {
+            display: none;
+        }
+        .saved-week.active .week-content {
+            display: block;
+        }
+        .saved-week:hover {
+            background-color: #f9f9f9;
+        }
+        .saved-week-title {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        #week-selector {
+            margin-top: 10px;
+            padding: 5px;
+        }
+    </style>
+    <!-- Incluye la librería jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Diario de Natt &#129505</h1>
+            <button class="cover-photo-btn">FOTO DE TU PICIOSA CARA &#128525</button>
+            <input type="file" id="coverPhotoInput" style="display:none;" accept="image/*">
+            <div id="coverPhotoContainer" class="cover-photo-container">
+                <!-- La imagen de portada se mostrará aquí -->
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <article>
+            <h2>Los días de Natt</h2>
+            <p>Sigue contando tu día aquí, si Natt no quiso matar a nadie o cómo se sintió.</p>
+        </article>
+
+        <article class="calendar">
+            <h2>
+                Calendario
+                <button class="save-week-btn">Descargar Semana</button>
+            </h2>
+            <div class="day-row">
+                <div class="day-column">
+                    <div class="day-header">Lunes &#129505 </div>
+                    <textarea id="textarea-lunes" placeholder="Escribe aquí..."></textarea>
+                    <div class="photos" id="photos-lunes"></div>
+                    <label class="photo-input lunes">
+                        Subir Foto
+                        <input type="file" data-day="lunes" accept="image/*" multiple>
+                    </label>
+                </div>
+                <div class="day-column">
+                    <div class="day-header">Martes &#129505 </div>
+                    <textarea id="textarea-martes" placeholder="Escribe aquí..."></textarea>
+                    <div class="photos" id="photos-martes"></div>
+                    <label class="photo-input martes">
+                        Subir Foto
+                        <input type="file" data-day="martes" accept="image/*" multiple>
+                    </label>
+                </div>
+                <div class="day-column">
+                    <div class="day-header">Miércoles &#129505 </div>
+                    <textarea id="textarea-miercoles" placeholder="Escribe aquí..."></textarea>
+                    <div class="photos" id="photos-miercoles"></div>
+                    <label class="photo-input miercoles">
+                        Subir Foto
+                        <input type="file" data-day="miercoles" accept="image/*" multiple>
+                    </label>
+                </div>
+                <div class="day-column">
+                    <div class="day-header">Jueves &#129505 </div>
+                    <textarea id="textarea-jueves" placeholder="Escribe aquí..."></textarea>
+                    <div class="photos" id="photos-jueves"></div>
+                    <label class="photo-input jueves">
+                        Subir Foto
+                        <input type="file" data-day="jueves" accept="image/*" multiple>
+                    </label>
+                </div>
+                <div class="day-column">
+                    <div class="day-header">Viernes &#129505 </div>
+                    <textarea id="textarea-viernes" placeholder="Escribe aquí..."></textarea>
+                    <div class="photos" id="photos-viernes"></div>
+                    <label class="photo-input viernes">
+                        Subir Foto
+                        <input type="file" data-day="viernes" accept="image/*" multiple>
+                    </label>
+                </div>
+                <div class="day-column">
+                    <div class="day-header">Sábado &#129505 </div>
+                    <textarea id="textarea-sabado" placeholder="Escribe aquí..."></textarea>
+                    <div class="photos" id="photos-sabado"></div>
+                    <label class="photo-input sabado">
+                        Subir Foto
+                        <input type="file" data-day="sabado" accept="image/*" multiple>
+                    </label>
+                </div>
+                <div class="day-column">
+                    <div class="day-header">Domingo &#129505 </div>
+                    <textarea id="textarea-domingo" placeholder="Escribe aquí..."></textarea>
+                    <div class="photos" id="photos-domingo"></div>
+                    <label class="photo-input domingo">
+                        Subir Foto
+                        <input type="file" data-day="domingo" accept="image/*" multiple>
+                    </label>
+                </div>
+            </div>
+        </article>
+
+        <div id="saved-weeks">
+            <!-- Las semanas guardadas se mostrarán aquí -->
+        </div>
+    </div>
+
+    <!-- Modal para ver la foto ampliada -->
+    <div id="photoModal" class="modal">
+        <button class="modal-close">&times;</button>
+        <img id="modalImage" src="" alt="Foto ampliada">
+    </div>
+
+    <script>
+        const { jsPDF } = window.jspdf;
+
+        // Mostrar la imagen de portada en el contenedor
+        document.querySelector('.cover-photo-btn').addEventListener('click', () => {
+            document.getElementById('coverPhotoInput').click();
+        });
+
+        document.getElementById('coverPhotoInput').addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const coverPhotoContainer = document.getElementById('coverPhotoContainer');
+                    coverPhotoContainer.innerHTML = `<img src="${event.target.result}" alt="Foto de portada">`;
+                    coverPhotoContainer.insertAdjacentHTML('beforeend', '<button id="deleteCoverPhoto" class="delete-icon">×</button>');
+                    document.getElementById('deleteCoverPhoto').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Eliminar la imagen de portada
+        document.addEventListener('click', function(event) {
+            if (event.target && event.target.id === 'deleteCoverPhoto') {
+                const coverPhotoContainer = document.getElementById('coverPhotoContainer');
+                coverPhotoContainer.innerHTML = '';
+                document.getElementById('deleteCoverPhoto').style.display = 'none';
+            }
+        });
+
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', function() {
+                const day = this.getAttribute('data-day');
+                const files = this.files;
+                const photosContainer = document.getElementById('photos-' + day);
+
+                if (files.length) {
+                    for (const file of files) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            const img = document.createElement('img');
+                            img.src = event.target.result;
+                            img.className = 'photo-img';
+                            img.addEventListener('click', function() {
+                                const modal = document.getElementById('photoModal');
+                                const modalImage = document.getElementById('modalImage');
+                                modalImage.src = this.src;
+                                modal.style.display = 'flex';
+                            });
+                            
+                            const imgWrapper = document.createElement('div');
+                            imgWrapper.className = 'img-wrapper';
+                            imgWrapper.appendChild(img);
+                            
+                            const deleteIcon = document.createElement('button');
+                            deleteIcon.className = 'delete-icon';
+                            deleteIcon.textContent = '×';
+                            deleteIcon.addEventListener('click', function() {
+                                photosContainer.removeChild(imgWrapper);
+                            });
+                            
+                            imgWrapper.appendChild(deleteIcon);
+                            photosContainer.appendChild(imgWrapper);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            });
+        });
+
+        document.querySelector('.modal-close').addEventListener('click', function() {
+            document.getElementById('photoModal').style.display = 'none';
+        });
+
+        document.getElementById('photoModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                this.style.display = 'none';
+            }
+        });
+
+        // Guardar y cargar el contenido del textarea en Local Storage
+        const textareas = document.querySelectorAll('textarea');
+        textareas.forEach(textarea => {
+            const day = textarea.id.split('-')[1];
+            textarea.value = localStorage.getItem(`diario-${day}`) || ''; // Cargar datos al abrir la página
+
+            textarea.addEventListener('input', function() {
+                localStorage.setItem(`diario-${day}`, this.value); // Guardar datos al cambiar
+            });
+        });
+
+        document.querySelector('.save-week-btn').addEventListener('click', function() {
+            const doc = new jsPDF();
+            const weekData = {
+                lunes: {
+                    text: document.getElementById('textarea-lunes').value,
+                    photos: Array.from(document.getElementById('photos-lunes').children).map(wrapper => wrapper.querySelector('img').src)
+                },
+                martes: {
+                    text: document.getElementById('textarea-martes').value,
+                    photos: Array.from(document.getElementById('photos-martes').children).map(wrapper => wrapper.querySelector('img').src)
+                },
+                miercoles: {
+                    text: document.getElementById('textarea-miercoles').value,
+                    photos: Array.from(document.getElementById('photos-miercoles').children).map(wrapper => wrapper.querySelector('img').src)
+                },
+                jueves: {
+                    text: document.getElementById('textarea-jueves').value,
+                    photos: Array.from(document.getElementById('photos-jueves').children).map(wrapper => wrapper.querySelector('img').src)
+                },
+                viernes: {
+                    text: document.getElementById('textarea-viernes').value,
+                    photos: Array.from(document.getElementById('photos-viernes').children).map(wrapper => wrapper.querySelector('img').src)
+                },
+                sabado: {
+                    text: document.getElementById('textarea-sabado').value,
+                    photos: Array.from(document.getElementById('photos-sabado').children).map(wrapper => wrapper.querySelector('img').src)
+                },
+                domingo: {
+                    text: document.getElementById('textarea-domingo').value,
+                    photos: Array.from(document.getElementById('photos-domingo').children).map(wrapper => wrapper.querySelector('img').src)
+                }
+            };
+
+            let y = 10;
+            const pageHeight = 280; // Altura de la página en mm
+
+            for (const day in weekData) {
+                if (weekData.hasOwnProperty(day)) {
+                    const dayData = weekData[day];
+                    doc.setFontSize(16);
+                    doc.setTextColor(255, 64, 129);
+                    doc.text(day.charAt(0).toUpperCase() + day.slice(1), 10, y);
+                    y += 10;
+                    doc.setFontSize(12);
+                    doc.setTextColor(0, 0, 0);
+                    doc.text(dayData.text, 10, y, { maxWidth: 180 });
+                    y += 10 + doc.splitTextToSize(dayData.text, 180).length * 7;
+
+                    if (dayData.photos.length > 0) {
+                        dayData.photos.forEach(photo => {
+                            doc.addImage(photo, 'JPEG', 10, y, 50, 50);
+                            y += 55; // Ajusta el espacio después de la imagen
+
+                            if (y > pageHeight) { // Verifica si es necesario agregar una nueva página
+                                doc.addPage();
+                                y = 10;
+                            }
+                        });
+                    }
+
+                    y += 10;
+
+                    if (y > pageHeight) { // Verifica si es necesario agregar una nueva página
+                        doc.addPage();
+                        y = 10;
+                    }
+                }
+            }
+
+            doc.save('Diario de Natt.pdf');
+        });
+    </script>
+</body>
+</html>
